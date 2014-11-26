@@ -1,0 +1,27 @@
+body {
+    padding-top: 40px;
+}
+.starter-template {
+    padding: 20px 5px;
+    text-align: center;
+}
+
+.bpInstructions{
+    padding: 10px;
+    margin: 15px 0px;
+    border: steelblue thin solid;
+    border-radius: 10px;
+}
+.subsection{
+    border: steelblue thick solid; padding: 5px;
+    border-radius: 7px;
+    padding: 15px 5px;
+}
+.bpMessage{
+    color: blue;
+    size: 14px;
+}
+svg{
+    display:block;
+    margin: auto;
+}

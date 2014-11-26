@@ -1,0 +1,21 @@
+<div class="bpPg">
+    <h1>Compare your Predictions</h1>
+    <div class="bpInstructions">
+        Your answer is the red triangle below.  Your classmates are blue.  Did you get the same answer as other people?  With your group, try and decide on the best guess.
+    </div>        
+    <svg width="600" height="200"  ng-mousemove="movePoint($event)" id="pointComparison">
+        <line x1="0" x2="600" y1="100" y2="100" stroke="black" stroke-width="12"/>
+        <ellipse cx="50" cy="100" rx="10" ry="50"/>
+        <ellipse cx="550" cy="100" rx="14" ry="80"/>
+        <text stroke="white" x="45" y="105" font-family="Verdana" font-size="10">20 lbs</text>
+        <text stroke="white" x="545" y="105" font-family="Verdana" font-size="10">30 lbs</text>
+        <g ng-repeat="trans in fulcrumArray" transform="{{trans}}"  id="myFulcrum">
+            <polygon points="0,0 10,20 -10,20" style="fill:white; stroke: blue; stroke-width:1"/>
+        </g>
+        <g transform="translate(300,106)"  id="myFulcrum">
+            <polygon points="0,0 10,20 -10,20" style="fill:white; stroke: red; stroke-width:3"/>
+        </g>
+    </svg>
+
+    <div class="bpContinue"><span class="btn btn-info">Done, Go To Next Step</span></div>
+</div>
