@@ -25,3 +25,6 @@ svg{
     display:block;
     margin: auto;
 }
+#fulcrum{
+    cursor: ew-resize;
+}

@@ -18,13 +18,13 @@
         <div class="bpInstructions">
         Ben can only find a 20 lb weight and a 30 lb weight.  It is still a total of 50 lbs but where should he grab the bar to make sure it doesn't tip over?  Don't worry about how much the bar weighs, just think about the weights on the end.  Drag the arrow with your mouse to the place where he should pick the bar up.
         </div>
-        <svg width="600" height="200"  ng-mousemove="movePoint($event)" id="pointPicker">
+        <svg width="600" height="200"  ng-mousemove="movePoint($event)"  ng-mouseup="allowmove=false" ng-mouseleave="allowmove=false" id="pointPicker">
             <line x1="0" x2="600" y1="100" y2="100" stroke="black" stroke-width="12"/>
             <ellipse cx="50" cy="100" rx="10" ry="50"/>
             <ellipse cx="550" cy="100" rx="14" ry="80"/>
             <text stroke="white" x="45" y="105" font-family="Verdana" font-size="10">20 lbs</text>
             <text stroke="white" x="545" y="105" font-family="Verdana" font-size="10">30 lbs</text>
-            <g transform="translate(300,106)" ng-mousedown="allowmove=true" ng-mouseup="allowmove=false" ng-mouseleave="allowmove=false" id="fulcrum">
+            <g transform="translate(300,106)" ng-mousedown="allowmove=true" id="fulcrum">
                 <polygon points="0,0 10,20 -10,20" style="fill:white; stroke: red; stroke-width:3"/>
                 <text x="-20" y="34" stroke="red" font-size="10">Move me!</text>
             </g>

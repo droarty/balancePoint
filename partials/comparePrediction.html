@@ -1,8 +1,8 @@
 <div class="bpPg">
     <h1>Compare your Predictions</h1>
     <div class="bpInstructions">
-        Your answer is the red triangle below.  Your classmates are blue.  Did you get the same answer as other people?  With your group, try and decide on the best guess.
-    </div>        
+        {{prompt}} 
+    </div>        For this demo you can create more students by <a href='#/name'>entering another name</a>
     <svg width="600" height="200"  ng-mousemove="movePoint($event)" id="pointComparison">
         <line x1="0" x2="600" y1="100" y2="100" stroke="black" stroke-width="12"/>
         <ellipse cx="50" cy="100" rx="10" ry="50"/>

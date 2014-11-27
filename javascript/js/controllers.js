@@ -6,7 +6,7 @@ bpControllers.controller('NameCtrl', ['$scope','$rootScope', '$location', '$http
         var rt=$rootScope;
         $scope.msg="";
         $scope.btnMsg="Create New Student Record";
-        
+        window.setTimeout(function(){$("input[ng-model='name']").focus();},500);
         if(rt.sa) $scope.name=rt.sa.name;
 
         //watch for changes to name, check if it exists on backend...
@@ -64,6 +64,8 @@ bpControllers.controller('NameCtrl', ['$scope','$rootScope', '$location', '$http
 bpControllers.controller('PredictCtrl', ['$scope','$rootScope', '$location','$http',
     function ($scope,$rootScope,$location,$http) {
         var rt=$rootScope;
+        //redirect to home page if we don't have a student answeo object...
+        if(!rt.sa) $location.path("/name");
         //if we already have a prediction, draw it...
         if(rt.sa&&rt.sa.prediction) $("#fulcrum").attr("transform","translate("+(parseInt(rt.sa.prediction)+300)+",106)");
         //wired up to the svg element on mouse move to capture x coordinate...
@@ -106,6 +108,8 @@ bpControllers.controller('PredictCtrl', ['$scope','$rootScope', '$location','$ht
 bpControllers.controller('ComparePredictionCtrl', ['$scope','$rootScope', '$location','$http',
     function ($scope,$rootScope, $location,$http) {
         var rt=$rootScope;
+        //redirect to home page if we don't have a student answeo object...
+        if(!rt.sa) $location.path("/name");
         //redraw my  prediction...
         if(rt.sa&&rt.sa.prediction) $("#myFulcrum").attr("transform","translate("+(parseInt(rt.sa.prediction)+300)+",106)");
         //get all the other student's data...
@@ -118,8 +122,13 @@ bpControllers.controller('ComparePredictionCtrl', ['$scope','$rootScope', '$loca
                 for(var i=0;i<data.length;i++){
                     if(data[i].prediction!=undefined&&data[i].name!=rt.sa.name) $scope.fulcrumArray.push("translate("+(parseInt(data[i].prediction)+300)+",110)");
                 }
+                if($scope.fulcrumArray.length>1) $scope.prompt="Your answer is the red triangle below.  Your classmates are blue.  Did you get the same answer as other people?  With your group, try and decide on the best guess.";
+                else if($scope.fulcrumArray.length>0) $scope.prompt="Your answer is the red triangle below.  One other classmate's is blue.  Refresh this page when more students have submitted their prediction, then decide on the best guess. "; 
+                else $scope.prompt="Good job, your answer is the red triangle below.  None of your classmates have submitted thier prediction yet.  Refresh this page when more students have submitted their prediction, then decide on the best guess."; 
+                
             }
         );
+        $scope.prompt="Loading...";
         
     }
 ]);
