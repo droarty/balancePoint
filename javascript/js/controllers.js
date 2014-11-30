@@ -4,6 +4,7 @@ var bpControllers=angular.module('bpControllers',[]);
 bpControllers.controller('NameCtrl', ['$scope','$rootScope', '$location', '$http',
     function ($scope,$rootScope,$location, $http) {
         var rt=$rootScope;
+        activateTab("#/name");
         $scope.msg="";
         $scope.btnMsg="Create New Student Record";
         window.setTimeout(function(){$("input[ng-model='name']").focus();},500);
@@ -64,6 +65,7 @@ bpControllers.controller('NameCtrl', ['$scope','$rootScope', '$location', '$http
 bpControllers.controller('PredictCtrl', ['$scope','$rootScope', '$location','$http',
     function ($scope,$rootScope,$location,$http) {
         var rt=$rootScope;
+        activateTab("#/predict");
         //redirect to home page if we don't have a student answeo object...
         if(!rt.sa) $location.path("/name");
         //if we already have a prediction, draw it...
@@ -108,6 +110,7 @@ bpControllers.controller('PredictCtrl', ['$scope','$rootScope', '$location','$ht
 bpControllers.controller('ComparePredictionCtrl', ['$scope','$rootScope', '$location','$http',
     function ($scope,$rootScope, $location,$http) {
         var rt=$rootScope;
+        activateTab("#/comparePredictions");
         //redirect to home page if we don't have a student answeo object...
         if(!rt.sa) $location.path("/name");
         //redraw my  prediction...
@@ -134,3 +137,29 @@ bpControllers.controller('ComparePredictionCtrl', ['$scope','$rootScope', '$loca
 ]);
 
 
+/* allow student to choose information needed to solve */
+bpControllers.controller('MoreInfoCtrl', ['$scope','$rootScope', '$location','$http',
+    function ($scope,$rootScope, $location,$http) {
+        activateTab("#/moreInfo");
+    }
+]);
+
+/* Student documents and draws solution */
+bpControllers.controller('SolveItCtrl', ['$scope','$rootScope', '$location','$http',
+    function ($scope,$rootScope, $location,$http) {
+        activateTab("#/solveIt");
+    }
+]);
+
+/* fetch all student solutions and display */
+bpControllers.controller('CompareSolutionCtrl', ['$scope','$rootScope', '$location','$http',
+    function ($scope,$rootScope, $location,$http) {
+        activateTab("#/compareSolution");
+    }
+]);
+
+//sets active nav link in the top nav bar...
+var activateTab=function(href){
+    $("ul.nav li.active").removeClass("active");
+    $("ul.nav a[href='"+href+"']").parent().addClass("active");
+}
