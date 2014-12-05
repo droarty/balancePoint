@@ -1,4 +1,4 @@
-var bpApp=angular.module("bpApp",["ngRoute","bpControllers"]);
+var bpApp=angular.module("bpApp",["ngRoute","bpControllers", "DataServices"]);
 
 bpApp.config(['$routeProvider',
     function($routeProvider){

@@ -1,9 +1,8 @@
 var bpControllers=angular.module('bpControllers',[]);
 
-
 /* Get name of student, then fetch studentAnswer or create a new one */
-bpControllers.controller('NameCtrl', ['$scope','$rootScope', '$location', 'DataSrc',
-    function ($scope,$rootScope,$location, DataSrc) {
+bpControllers.controller('NameCtrl', ['$scope','$rootScope', '$location', '$http',
+    function ($scope,$rootScope,$location, $http) {
         var rt=$rootScope;
         activateTab("#/name");
         $scope.msg="";
@@ -15,16 +14,15 @@ bpControllers.controller('NameCtrl', ['$scope','$rootScope', '$location', 'DataS
         $scope.$watch('name',function(newval, oldval){
             //check for existing data on backend only if there is no existing .sa or the name is different...
             if(newval&&(!rt.sa||rt.sa.name!=newval)){
-                $scope.btnMsg="Checking Name...";
-                //DataServices.post('data/getStudentAnswer.php',{"action":"fetch", "name":$scope.name})
-                DataSrc.fetch({name:$scope.name},
+                $scope.btnMsg="Checking Name..."
+                $http.post('data/getStudentAnswer.php',{"action":"fetch", "name":$scope.name})
+                .success(
                     function(data) {
-                        if(data.value){
+                        if(data.data){
                             //if data exist, indicate to student, add data to scope...
                             $scope.msg="Welcome Back "+$scope.name;
                             $scope.btnMsg="Continue";
-                            $rootScope.sa=data.value;
-                            $rootScope.id=data.id;
+                            $rootScope.sa=data.data;
                         }
                         else {
                             $scope.msg="";
@@ -40,14 +38,11 @@ bpControllers.controller('NameCtrl', ['$scope','$rootScope', '$location', 'DataS
         $scope.start=function(){
             if(!$scope.name) $scope.msg="You need to enter a name to continue.";
             else {
-                if(!rt.sa||rt.sa.name!=$scope.name){
-                    rt.sa={"name":$scope.name};
-                    rt.id=null;
-                }
+                if(!rt.sa||rt.sa.name!=$scope.name) rt.sa={"name":$scope.name};
                 //create or save record...
-                DataSrc.save({"name":$scope.name, "value":rt.sa, "id":rt.id},
+                $http.post('data/getStudentAnswer.php',{"action":"save", "name":$scope.name, "value":rt.sa})
+                .success(
                     function(data) {
-                        if(data.id) $rootScope.id=data.id;
                         $location.path("/predict");
                     }
                 );
@@ -56,21 +51,19 @@ bpControllers.controller('NameCtrl', ['$scope','$rootScope', '$location', 'DataS
         
         //provide  a way to clear all students from demo...
         $scope.clear=function(){
-            DataSrc.clearAll({},
+            $http.post('data/getStudentAnswer.php',{"action":"clearAll"})
+            .success(
                 function(data) {
                     alert("All Cleared");
                 }
             );
-            $scope.name="";
-            rt.sa=null;
-            rt.id=null;
         }
     }
 ]);
 
 /* get student prediction and save it */
-bpControllers.controller('PredictCtrl', ['$scope','$rootScope', '$location','DataSrc',
-    function ($scope,$rootScope,$location,DataSrc) {
+bpControllers.controller('PredictCtrl', ['$scope','$rootScope', '$location','$http',
+    function ($scope,$rootScope,$location,$http) {
         var rt=$rootScope;
         activateTab("#/predict");
         //redirect to home page if we don't have a student answeo object...
@@ -100,9 +93,9 @@ bpControllers.controller('PredictCtrl', ['$scope','$rootScope', '$location','Dat
                 if(rt.sa.prediction==undefined) $scope.msg="Can't move forward yet... you need to make a prediction by sliding the triangle to where you think Ben should pick up the bar."
                 else{
                     //create or save record...
-                    DataSrc.save({"name":rt.sa.name, "value":rt.sa, "id":rt.id},
+                    $http.post('data/getStudentAnswer.php',{"action":"save", "name":rt.sa.name, "value":rt.sa})
+                    .success(
                         function(data) {
-                            if(data.id) $rootScope.id=data.id;
                             $location.path("/comparePrediction");
                         }
                     );
@@ -114,29 +107,23 @@ bpControllers.controller('PredictCtrl', ['$scope','$rootScope', '$location','Dat
 ]);
 
 /* fetch all student answers and display */
-bpControllers.controller('ComparePredictionCtrl', ['$scope','$rootScope', '$location','DataSrc',
-    function ($scope,$rootScope, $location,DataSrc) {
+bpControllers.controller('ComparePredictionCtrl', ['$scope','$rootScope', '$location','$http',
+    function ($scope,$rootScope, $location,$http) {
         var rt=$rootScope;
         activateTab("#/comparePredictions");
         //redirect to home page if we don't have a student answeo object...
-        if(!rt.sa) {
-            $location.path("/name");
-            return;
-        }
+        if(!rt.sa) $location.path("/name");
         //redraw my  prediction...
         if(rt.sa&&rt.sa.prediction) $("#myFulcrum").attr("transform","translate("+(parseInt(rt.sa.prediction)+300)+",106)");
         //get all the other student's data...
-        DataSrc.fetchAll({},
+        $http.post('data/getStudentAnswer.php',{"action":"fetchAll"})
+        .success(
             function(data) {
                 //create an array of fulcrum positions...
                 //TO-DO  embellish so identical positions don't pile up on top of each other'
                 $scope.fulcrumArray=[];
                 for(var i=0;i<data.length;i++){
-                    if(data[i].prediction!=undefined&&data[i].name!=rt.sa.name) {
-                        var txt="translate("+(parseInt(data[i].prediction)+300)+",110)";
-                        //need to avoid duplicates as ngRepeat does not seem to like them...
-                        if($scope.fulcrumArray.indexOf(txt)==-1) $scope.fulcrumArray.push(txt);
-                    }
+                    if(data[i].prediction!=undefined&&data[i].name!=rt.sa.name) $scope.fulcrumArray.push("translate("+(parseInt(data[i].prediction)+300)+",110)");
                 }
                 if($scope.fulcrumArray.length>1) $scope.prompt="Your answer is the red triangle below.  Your classmates are blue.  Did you get the same answer as other people?  With your group, try and decide on the best guess.";
                 else if($scope.fulcrumArray.length>0) $scope.prompt="Your answer is the red triangle below.  One other classmate's is blue.  Refresh this page when more students have submitted their prediction, then decide on the best guess. "; 
@@ -151,22 +138,22 @@ bpControllers.controller('ComparePredictionCtrl', ['$scope','$rootScope', '$loca
 
 
 /* allow student to choose information needed to solve */
-bpControllers.controller('MoreInfoCtrl', ['$scope','$rootScope', '$location','DataSrc',
-    function ($scope,$rootScope, $location,DataSrc) {
+bpControllers.controller('MoreInfoCtrl', ['$scope','$rootScope', '$location','$http',
+    function ($scope,$rootScope, $location,$http) {
         activateTab("#/moreInfo");
     }
 ]);
 
 /* Student documents and draws solution */
-bpControllers.controller('SolveItCtrl', ['$scope','$rootScope', '$location','DataSrc',
-    function ($scope,$rootScope, $location,DataSrc) {
+bpControllers.controller('SolveItCtrl', ['$scope','$rootScope', '$location','$http',
+    function ($scope,$rootScope, $location,$http) {
         activateTab("#/solveIt");
     }
 ]);
 
 /* fetch all student solutions and display */
-bpControllers.controller('CompareSolutionCtrl', ['$scope','$rootScope', '$location','DataSrc',
-    function ($scope,$rootScope, $location,DataSrc) {
+bpControllers.controller('CompareSolutionCtrl', ['$scope','$rootScope', '$location','$http',
+    function ($scope,$rootScope, $location,$http) {
         activateTab("#/compareSolution");
     }
 ]);
