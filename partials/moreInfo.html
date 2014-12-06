@@ -4,10 +4,24 @@
         Click on the information below that you think you will need to solve this problem.
     </div>
     <ul>
-        <li>Length of bar</li>
-        <li>Diameter of 20lb weight</li>
-        <li>Diameter of 30lb weight</li>
-        <li>... </li>
+        <li><input type="checkbox" ng-model="middleDistance"  />Distance between weights</li>
+        <li><input type="checkbox" ng-model="endDistance" />Distance from end of the bar to weight</li>
+        <li><input type="checkbox"  ng-model="diameter20"  />Diameter of 20lb weight</li>
+        <li><input type="checkbox"  ng-model="diameter30" />Diameter of 30lb weight</li>
+       
     </ul>
+            <svg width="650" height="200"  ng-mousemove="movePoint($event)"  ng-mouseup="allowmove=false" ng-mouseleave="allowmove=false" id="pointPicker">
+            <line x1="0" x2="600" y1="100" y2="100" stroke="black" stroke-width="12"/>
+            <ellipse cx="50" cy="100" rx="10" ry="50"/>
+            <ellipse cx="550" cy="100" rx="14" ry="80"/>
+            <text stroke="white" x="45" y="105" font-family="Verdana" font-size="10">20 lbs</text>
+            <text stroke="white" x="545" y="105" font-family="Verdana" font-size="10">30 lbs</text>
+            <text class="middleDistance" stroke="red" x="280" y="85" font-family="Verdana" font-size="10">100 inches</text>
+            <text class="endDistance" stroke="red" x="5" y="85" font-family="Verdana" font-size="10">8 inches</text>
+            <text class="endDistance" stroke="red" x="565" y="85" font-family="Verdana" font-size="10">8 inches</text>
+            <text class="diameter20" stroke="red" x="65" y="125" font-family="Verdana" font-size="10">16 inches</text>
+            <text class="diameter30" stroke="red" x="480" y="125" font-family="Verdana" font-size="10">24 inches</text>
+        </svg>
+
     <div class="bpContinue"><a class="btn btn-info" href="#/solveIt">Done, Go To Next Step</a></div>
 </div>

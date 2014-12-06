@@ -154,7 +154,36 @@ bpControllers.controller('ComparePredictionCtrl', ['$scope','$rootScope', '$loca
 bpControllers.controller('MoreInfoCtrl', ['$scope','$rootScope', '$location','DataSrc',
     function ($scope,$rootScope, $location,DataSrc) {
         activateTab("#/moreInfo");
-    }
+        var watcher=function(a){
+            var createWatcher=function(nm){return function(){
+                    $scope.$watch(nm,function(){
+                        console.log(nm+":"+$scope[nm]);
+                        if($scope[nm]) $("."+nm).show();
+                        else  $("."+nm).hide();
+                    })
+                };};
+            for(var i=0;i<a.length;i++){
+                createWatcher(a[i])();
+            }
+        }
+        watcher(["middleDistance", "endDistance","diameter20","diameter30"]);
+/*        $scope.$watch('middleDistance',function(newval, oldval){
+            if($scope.middleDistance) $(".middleDistance").show();
+            else $(".middleDistance").hide();
+        });
+        $scope.$watch('endDistance',function(newval, oldval){
+            if($scope.endDistance) $(".endDistance").show();
+            else $(".endDistance").hide();
+        });
+        $scope.$watch('diameter20',function(newval, oldval){
+            if($scope.diameter20) $(".diameter20").show();
+            else $(".diameter20").hide();
+        });
+        $scope.$watch('diameter30',function(newval, oldval){
+            if($scope.diameter30) $(".diameter30").show();
+            else $(".diameter30").hide();
+        });
+*/    }
 ]);
 
 /* Student documents and draws solution */
